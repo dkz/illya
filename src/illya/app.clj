@@ -15,8 +15,6 @@
    [spyscope.core :as spy]
    [hiccup.core :as hiccup :refer [h]]))
 
-(def get-storage storage/get-storage)
-
 (defn add-headers [response-body & {:keys [status] :or {status 200}}]
   {:status 200
    :headers {"Content-Type" "text/html;charset=utf-8"}
@@ -59,7 +57,7 @@
        (add-headers
         (views/render
          (views/board-template
-          (storage/threads (get-storage) board)
+          (storage/threads board)
           {:board (name board)
            :post-url (str "/board/" (name board) "/thread/new")
            :post-header "[start a thread]"})))))))
@@ -71,7 +69,7 @@
       (let [{params :params} request
             thread (:thread params)
             board (:board params)]
-        (if-let [thread-model (storage/thread (get-storage) board thread)]
+        (if-let [thread-model (storage/thread board thread)]
           (add-headers
            (views/render
             (views/thread-template
@@ -92,7 +90,7 @@
            board (:board params)
            title (:title params)
            text (:text params)]
-       (storage/post-thread (get-storage) board {:title (hiccup/h title) :contents (text->html text)})
+       (storage/post-thread board {:title (hiccup/h title) :contents (text->html text)})
        (response/redirect-after-post (str "/board/" (name board)))))))
 
 (def new-post-handler
@@ -104,7 +102,7 @@
             thread (:thread params)
             title (:title params)
             text (:text params)]
-        (storage/post-reply (get-storage) board thread {:title (hiccup/h title) :contents (text->html text)})
+        (storage/post-reply board thread {:title (hiccup/h title) :contents (text->html text)})
         (response/redirect-after-post (str "/board/" (name board) "/thread/" thread)))))))
 
 (def faq-handler
