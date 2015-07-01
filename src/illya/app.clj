@@ -7,6 +7,7 @@
   (:require
    [illya.views :as views]
    [illya.storage :as storage]
+   [illya.config :as configuration]
    [ring.adapter.jetty-async :refer [run-jetty-async]]
    [compojure.route :as routes]
    [compojure.handler :as handler]
@@ -126,6 +127,7 @@
    (handler/site app-routes))
 
 (defn app-init []
+  (configuration/load-configuration)
   (storage/init-storage))
 
 (defn -main [& args]
