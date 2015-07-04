@@ -39,6 +39,9 @@
 (defn post-reply [board-key number post]
   (ostorage/transaction-post-reply board-key number post))
 
+(defn hide-post [board-key number]
+  (ostorage/transaction-hide-post board-key number))
+
 (defn init-storage []
   (ograph/set-graph-factory!
    (doto (new OrientGraphFactory

@@ -8,7 +8,10 @@
 (def configuration-defaults
   {"orient-db.url" "remote:localhost/Illya"
    "orient-db.user" "root"
-   "orient-db.pass" "root"})
+   "orient-db.pass" "root"
+   "control.key" "admin"
+   "control.user" "root"
+   "control.pass" "root"})
 
 (defn file-exists? [file]
   (and (.exists file) (not (.isDirectory file))))

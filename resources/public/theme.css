@@ -69,6 +69,37 @@ div.footer-text {
     margin: 0.5em;
 }
 
+/* Authorization form styles */
+
+div.authorization {
+    background: #fafafa;
+    width: 250px;
+    margin-top: 20px;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 1em 2em;
+}
+
+h3.authorization {
+    text-align: center;
+    margin: 0.2em;
+}
+
+form.authorization-form {
+    margin: 1em 0em;
+}
+
+div.authorization-group {
+}
+
+div.authorization-label {
+    width: 6em;
+}
+
+input.authorization-input {
+    width: 100%;
+}
+
 /* Posting form styles */
 
 div.posting {
@@ -227,6 +258,17 @@ div.post-header-user {
 div.post-header-date {
     display: inline-block;
     margin: 0.2em;
+}
+
+div.post-header-menu {
+    float: right;
+    display: inline-block;
+    margin: 0.2em;
+}
+
+div.post-header-menu-item {
+    display: inline-block;
+    margin: 0em 0.5em;
 }
 
 /* Faq styles */

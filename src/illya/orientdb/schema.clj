@@ -44,5 +44,14 @@
       (ograph/create-vertex!
        :MessageBoard
        {"name" "c"
-        "message-counter" 0}))))))
+        "message-counter" 0}))))
+
+   ((migration/version 2)
+    (cats/mlet
+     [message (ograph/vertex-type :Message)
+      board (ograph/vertex-type :MessageBoard)]
+     (cats/>>
+      (ograph/create-edge-type! :BelongsTo {})
+      (ograph/set-outgoing-edge! message :BelongsTo)
+      (ograph/set-incoming-edge! board :BelongsTo))))))
 

@@ -34,7 +34,7 @@
   (let [graph (.getNoTx *orient-graph-factory*)]
     (try
       (cats/with-monad reader/reader-monad
-        (reader/run-reader #spy/d monad-instance #spy/d graph))
+        (reader/run-reader monad-instance graph))
       (finally
         (.shutdown graph)))))
 

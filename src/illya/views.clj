@@ -59,31 +59,42 @@
    [:div.footer-text
     "プリズマ☆イリヤちゃん"]])
 
-(defn post-header-template [tag reply]
-  (let [{number :number
+(defn post-header-template [tag reply args]
+  (let [control (:control args)
+        {number :number
          date :created-date
          title :title} reply]
     [tag
      [:div.post-header-number number]
      [:div.post-header-name (str "[" title "]")]
      ;;[:div.post-header-user u-id]
-     [:div.post-header-date (str "(" date ")")]]))
+     [:div.post-header-date (str "(" date ")")]
+     [:div.post-header-menu
+      (if (:permitted control)
+        [:div.post-header-menu-item
+         "["
+         [:a {:href (str "/board/"
+                         (name (:board args))
+                         "/control/hide/" number
+                         "?control=" (:key control)
+                         "&redirect=" (:thread args))} "hide"]
+         "]"])]]))
 
-(defn thread-reply-template [reply]
+(defn thread-reply-template [reply args]
   [:div-thread-post
-   (post-header-template :div.thread-post-header reply)
+   (post-header-template :div.thread-post-header reply args)
    [:div.thread-post-html (:contents reply)]])
 
-(defn thread-contents-template [data]
+(defn thread-contents-template [data args]
   (let [{original-post :message
          replies :replies} data]
     [:div.thread
      [:div.thread-op-post
-      (post-header-template :div.thread-op-post-header original-post)
+      (post-header-template :div.thread-op-post-header original-post args)
       [:div.thread-op-post-html (:contents original-post)]]
      (for [reply replies]
        [:div.thread-reply
-        (post-header-template :div.thread-reply-header reply)
+        (post-header-template :div.thread-reply-header reply args)
         [:div.thread-reply-html (:contents reply)]])]))
 
 (defn thread-template [data args]
@@ -94,11 +105,12 @@
    [:body
     (header-template)
     (posting-template args)
-    (thread-contents-template data)
+    (thread-contents-template data args)
     (footer-template)]])
 
-(defn board-thread-header-template [message args]
-  (let [{number :number
+(defn board-thread-header-template [message url args]
+  (let [control (:control args)
+        {number :number
          date :created-date
          title :title} message]
     [:div.board-thread-header
@@ -107,9 +119,16 @@
      ;;[:div.board-thread-header-user u-id]
      [:div.board-thread-header-date (str "(" date ")")]
      [:div.board-thread-header-menu
+      (if (:permitted control)
+        [:div.board-thread-header-menu-item
+         "["
+         [:a {:href (str "/board/"
+                         (:board args)
+                         "/control/hide/" number "?control=" (:key control))} "hide"]
+         "]"])
       [:div.board-thread-header-menu-item
        "["
-       [:a {:href (:url args)} "view"]
+       [:a {:href url} "view"]
        "]"]]]))
 
 (defn board-contents-template [data args]
@@ -120,7 +139,8 @@
         [:div.board-thread-op-post
          (board-thread-header-template
           message
-          {:url (str "/board/" (:board args) "/thread/" (:number message))})
+          (str "/board/" (:board args) "/thread/" (:number message))
+          args)
          [:div.board-thread-op-post-html (:contents message)]]
         [:div.board-thread-footer]]))])
 
@@ -160,4 +180,23 @@
    [:body
     [:center
      [:h3 "ＨＴＴＰ４０４何もありません"]]]])
+
+(defn authorization-template [{key :key}]
+  [:html
+   [:head
+    [:title "「ＡＵＴＨ」プリズマ☆イリヤちゃん"]
+    [:link {:rel "stylesheet" :href "/static/theme.css"}]]
+   [:body
+    [:div.authorization
+     [:h3.authorization "Authorization Required"]
+     [:form.authorization-form
+      {:method "POST" :action (str "/auth?control=" key)}
+      [:div.authorization-group
+       [:div.authorization-label "User"]
+       [:input.authorization-input {:type "text" :name "user"}]]
+      [:div.authorization-group
+       [:div.authorization-label "Pass"]
+       [:input.authorization-input {:type "text" :name "pass"}]]
+      [:div.authorization-group
+       [:input.authorization-submit-button {:type "submit" :value "Ａ Ｕ Ｔ Ｈ"}]]]]]])
 

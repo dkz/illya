@@ -35,6 +35,7 @@
       (cats/>>
        (ograph/set-properties! board {"message-counter" (+ 1 counter)})
        (ograph/create-edge! :PostedOn thread board)
+       (ograph/create-edge! :BelongsTo message board)
        (cats/return ()))))))
 
 (defn m-thread-vertex [board-key thread-number]
@@ -63,6 +64,7 @@
        (ograph/set-properties! board {"message-counter" (+ 1 counter)})
        (ograph/set-properties! thread {"updated-date" created-date})
        (ograph/create-edge! :PostedTo message thread)
+       (ograph/create-edge! :BelongsTo message board)
        (cats/return ()))))))
 
 (defn filter-hidden-messages [thread]
@@ -90,3 +92,16 @@
       (cats/fmap filter-hidden-messages
                  (mapper/fetch thread fetch-plan))))))
 
+(defn m-message-vertex [board-key number]
+  (cats/mlet
+   [messages (ograph/query! "select from (select expand(in('BelongsTo')) from MessageBoard where name = :board) where number = :number"
+                            {"board" (name board-key)
+                             "number" number})]
+   (cats/return (first messages))))
+
+(defn transaction-hide-post [board-key number]
+  (ograph/do-transaction
+   (cats/mlet
+    [message (m-message-vertex board-key number)]
+    (if message
+      (ograph/set-properties! message {"is-hidden" true})))))
