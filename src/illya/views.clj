@@ -200,3 +200,12 @@
       [:div.authorization-group
        [:input.authorization-submit-button {:type "submit" :value "Ａ Ｕ Ｔ Ｈ"}]]]]]])
 
+(defn action-not-allowed-template [args]
+  [:html
+   [:head
+    [:title "プリズマ☆イリヤちゃん"]
+    [:link {:rel "stylesheet" :href "/static/theme.css"}]]
+   [:body
+    [:center
+     [:h3 "Action is not allowed"]
+     (:action args)]]])

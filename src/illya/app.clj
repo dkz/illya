@@ -151,8 +151,13 @@
            board (:board params)
            title (:title params)
            text (:text params)]
-       (storage/post-thread board {:title (hiccup/h title) :contents (text->html text)})
-       (response/redirect-after-post (str "/board/" (name board)))))))
+       (if (not (string/blank? text))
+         (do
+           (storage/post-thread board {:title (hiccup/h title) :contents (text->html text)})
+           (response/redirect-after-post (str "/board/" (name board))))
+         (add-headers
+          (views/render
+           (views/action-not-allowed-template {:action "empty post"}))))))))
 
 (def new-post-handler
   (board-dispatching-middleware
@@ -163,8 +168,13 @@
             thread (:thread params)
             title (:title params)
             text (:text params)]
-        (storage/post-reply board thread {:title (hiccup/h title) :contents (text->html text)})
-        (response/redirect-after-post (str "/board/" (name board) "/thread/" thread)))))))
+        (if (not (string/blank? text))
+          (do
+            (storage/post-reply board thread {:title (hiccup/h title) :contents (text->html text)})
+            (response/redirect-after-post (str "/board/" (name board) "/thread/" thread)))
+          (add-headers
+           (views/render
+            (views/action-not-allowed-template {:action "empty post"})))))))))
 
 (def hide-post-handler
   (control-middleware
