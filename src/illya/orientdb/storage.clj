@@ -14,7 +14,7 @@
                           {"name" (name board-key)})]
    (cats/return (first boards))))
 
-(defn transaction-post-thread [board-key {contents :contents title :title}]
+(defn transaction-post-thread [board-key {contents :contents title :title ip :ip}]
   (let [created-date (new java.util.Date)]
     (ograph/do-transaction
      (cats/mlet
@@ -22,7 +22,8 @@
        counter (ograph/property board "message-counter")
        message (ograph/create-vertex!
                 :Message
-                {"created-date" created-date
+                {"ip" ip
+                 "created-date" created-date
                  "is-hidden" false
                  "number" (+ 1 counter)
                  "title" title
@@ -46,7 +47,7 @@
               "number" thread-number})]
    (cats/return (first threads))))
 
-(defn transaction-post-reply [board-key thread-number {contents :contents title :title}]
+(defn transaction-post-reply [board-key thread-number {contents :contents title :title ip :ip}]
   (let [created-date (new java.util.Date)]
     (ograph/do-transaction
      (cats/mlet
@@ -55,7 +56,8 @@
        thread (m-thread-vertex board-key thread-number)
        message (ograph/create-vertex!
                 :Message
-                {"created-date" created-date
+                {"ip" ip
+                 "created-date" created-date
                  "is-hidden" false
                  "number" (+ 1 counter)
                  "title" title

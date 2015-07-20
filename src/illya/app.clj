@@ -153,7 +153,7 @@
            text (:text params)]
        (if (not (string/blank? text))
          (do
-           (storage/post-thread board {:title (hiccup/h title) :contents (text->html text)})
+           (storage/post-thread board {:title (hiccup/h title) :contents (text->html text) :ip (:remote-addr request)})
            (response/redirect-after-post (str "/board/" (name board))))
          (add-headers
           (views/render
@@ -170,7 +170,7 @@
             text (:text params)]
         (if (not (string/blank? text))
           (do
-            (storage/post-reply board thread {:title (hiccup/h title) :contents (text->html text)})
+            (storage/post-reply board thread {:title (hiccup/h title) :contents (text->html text) :ip (:remote-addr request)})
             (response/redirect-after-post (str "/board/" (name board) "/thread/" thread)))
           (add-headers
            (views/render

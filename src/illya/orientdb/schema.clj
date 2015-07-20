@@ -53,5 +53,11 @@
      (cats/>>
       (ograph/create-edge-type! :BelongsTo {})
       (ograph/set-outgoing-edge! message :BelongsTo)
-      (ograph/set-incoming-edge! board :BelongsTo))))))
+      (ograph/set-incoming-edge! board :BelongsTo))))
+
+   ((migration/version 3)
+    (cats/mlet
+     [message (ograph/vertex-type :Message)]
+     (ograph/create-properties! message {"ip" :string})))))
+
 

@@ -62,12 +62,14 @@
 (defn post-header-template [tag reply args]
   (let [control (:control args)
         {number :number
+         ip :ip
          date :created-date
          title :title} reply]
     [tag
      [:div.post-header-number number]
      [:div.post-header-name (str "[" title "]")]
-     ;;[:div.post-header-user u-id]
+     (if (:permitted control)
+       [:div.post-header-user ip])
      [:div.post-header-date (str "(" date ")")]
      [:div.post-header-menu
       (if (:permitted control)

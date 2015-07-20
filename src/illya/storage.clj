@@ -17,6 +17,7 @@
         (mapper/property "number" :number)
         (mapper/property "contents" :contents)
         (mapper/property "created-date" :created-date)
+        (mapper/property "ip" :ip)
         (mapper/property "is-hidden" :is-hidden)))
 
 (def thread-overview-plan
